@@ -33,7 +33,7 @@ body {
 .game-container {
     width: 100%;
     max-width: 430px;
-    height: 932px;
+    height: 800px;
     background: linear-gradient(145deg, #0f0f1e 0%, #1a1a2e 100%);
     border-radius: 40px;
     overflow: hidden;
@@ -42,6 +42,7 @@ body {
     box-shadow: 0 30px 60px rgba(0,0,0,0.5);
     position: relative;
     border: 2px solid var(--gold-dark);
+    margin: 20px auto;
 }
 
 /* Шапка */
@@ -186,10 +187,9 @@ body {
     position: relative;
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 15px;
     scroll-behavior: smooth;
 }
-
 
 /* Фоновые изображения для сцен */
 .game-screen[data-scene="start"] {
@@ -249,7 +249,6 @@ body {
                 url('images/bg_dessert.jpg') center/cover no-repeat fixed;
 }
 
-
 .game-screen[data-ending="СВИДЕТЕЛЬ"] .evidence-table {
     background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
                 url('images/bg_evidence_table.jpg') center/cover no-repeat;
@@ -258,7 +257,7 @@ body {
     margin: 15px 0;
 }
 
-/* Сцены */
+
 .scene {
     animation: fadeSlide 0.5s ease-out;
     background: rgba(0, 0, 0, 0.6);
@@ -267,6 +266,11 @@ body {
     padding: 20px;
     border: 1px solid rgba(255, 215, 0, 0.3);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+    margin-bottom: 10px;
+}
+
+.scene:last-child {
+    margin-bottom: 0;
 }
 
 @keyframes fadeSlide {
@@ -301,6 +305,11 @@ body {
     border-left: 4px solid var(--gold);
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
     text-shadow: var(--text-shadow);
+    margin-bottom: 10px;
+}
+
+.scene-description:last-child {
+    margin-bottom: 0;
 }
 
 /* Персонажи */
@@ -308,12 +317,16 @@ body {
     display: flex;
     align-items: flex-start;
     gap: 15px;
-    margin-bottom: 15px;
+    margin-bottom: 10px;
     animation: slideIn 0.3s;
     background: rgba(0, 0, 0, 0.4);
     backdrop-filter: blur(3px);
     border-radius: 20px;
     padding: 15px;
+}
+
+.character:last-child {
+    margin-bottom: 0;
 }
 
 @keyframes slideIn {
@@ -359,14 +372,19 @@ body {
 .character-speech p {
     font-size: 15px;
     line-height: 1.5;
+    margin-bottom: 5px;
+}
+
+.character-speech p:last-child {
+    margin-bottom: 0;
 }
 
 /* Варианты выбора */
 .choices {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    margin-top: 25px;
+    gap: 10px;
+    margin-top: 15px;
 }
 
 .choice-btn {
@@ -374,7 +392,7 @@ body {
     backdrop-filter: blur(5px);
     border: 2px solid rgba(255,215,0,0.2);
     color: white;
-    padding: 18px;
+    padding: 15px;
     border-radius: 15px;
     font-size: 16px;
     cursor: pointer;
@@ -401,6 +419,7 @@ body {
     text-align: center;
     animation: glowPulse 2s infinite;
     border: 3px solid var(--gold);
+    margin-bottom: 10px;
 }
 
 @keyframes glowPulse {
@@ -414,30 +433,30 @@ body {
     font-size: 36px;
     font-weight: 900;
     color: var(--gold);
-    margin-bottom: 30px;
+    margin-bottom: 20px;
     text-shadow: 0 0 20px rgba(255,215,0,0.5);
 }
 
 .ending-stats {
     display: flex;
     flex-wrap: wrap;
-    gap: 15px;
+    gap: 10px;
     justify-content: center;
-    margin: 25px 0;
+    margin: 20px 0;
 }
 
 .ending-stat {
     background: rgba(0, 0, 0, 0.6);
     backdrop-filter: blur(3px);
-    padding: 12px 20px;
+    padding: 10px 18px;
     border-radius: 30px;
     border: 1px solid var(--gold);
-    font-size: 16px;
+    font-size: 15px;
     text-shadow: var(--text-shadow);
 }
 
 .bottom-panel {
-    background: rgba(10,10,20,0.98);
+    background: rgb(10, 10, 20);
     backdrop-filter: blur(10px);
     border-top: 1px solid var(--gold-dark);
     z-index: 5;
@@ -448,11 +467,11 @@ body {
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 3px 0;
+    padding: 2px 0;
     background: rgba(0,0,0,0.5);
     cursor: pointer;
     color: var(--gold);
-    font-size: 12px;
+    font-size: 11px;
     border-bottom: 1px solid var(--gold-dark);
 }
 
@@ -552,8 +571,38 @@ body {
 .control-btn.load:hover { color: var(--info); }
 .control-btn.reset:hover { color: var(--danger); }
 
+/* Скроллбар */
+.game-screen::-webkit-scrollbar {
+    width: 5px;
+}
+
+.game-screen::-webkit-scrollbar-track {
+    background: rgba(255,255,255,0.05);
+}
+
+.game-screen::-webkit-scrollbar-thumb {
+    background: var(--gold);
+    border-radius: 5px;
+}
+
 /* Адаптация для мобильных */
 @media (max-width: 430px) {
+    .game-container {
+        height: 100vh;
+        border-radius: 0;
+        max-width: 100%;
+        border: none;
+        margin: 0;
+    }
+    
+    .stats {
+        font-size: 12px;
+    }
+    
+    .choice-btn {
+        padding: 15px;
+    }
+    
     .panel-content {
         padding: 3px 12px;
     }
@@ -579,372 +628,67 @@ body {
     }
 }
 
-/* Скроллбар */
-.game-screen::-webkit-scrollbar {
-    width: 5px;
-}
-
-.game-screen::-webkit-scrollbar-track {
-    background: rgba(255,255,255,0.05);
-}
-
-.game-screen::-webkit-scrollbar-thumb {
-    background: var(--gold);
-    border-radius: 5px;
-}
-
-/* Адаптация для маленьких экранов */
-@media (max-width: 430px) {
-    .game-container {
-        border-radius: 0;
-        height: 100vh;
-        max-width: 100%;
-        border: none;
-    }
-    
-    .stats {
-        font-size: 12px;
-    }
-    
-    .choice-btn {
-        padding: 15px;
-    }
-}
-
-/* Адаптация для больших экранов */
-
-@media (min-width: 431px) and (max-width: 768px) {
-    .game-container {
-        max-width: 600px;
-        height: 900px;
-        margin: 20px auto;
-    }
-    
-    .scene-title {
-        font-size: 32px;
-    }
-    
-    .character-avatar {
-        width: 80px;
-        height: 80px;
-    }
-    
-    .choice-btn {
-        font-size: 18px;
-        padding: 20px;
-    }
-}
-
-@media (min-width: 769px) and (max-width: 1024px) {
-    .game-container {
-        max-width: 700px;
-        height: 950px;
-        margin: 30px auto;
-    }
-    
-    .scene-title {
-        font-size: 36px;
-    }
-    
-    .character-avatar {
-        width: 90px;
-        height: 90px;
-    }
-    
-    .choice-btn {
-        font-size: 18px;
-        padding: 22px;
-    }
-    
-    .stats {
-        font-size: 16px;
-    }
-}
-
-@media (min-width: 1025px) {
-    body {
-        background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
-        padding: 40px;
-    }
-    
-    .game-container {
-        max-width: 430px;
-        height: 932px;
-        margin: 0 auto;
-        box-shadow: 0 40px 80px rgba(0,0,0,0.7);
-        transition: transform 0.3s;
-    }
-    
-    .game-container:hover {
-        transform: scale(1.01);
-    }
-    
-    body::before {
-        content: '';
-        position: fixed;
-        top: 0;
-        left: 0;
-        right: 0;
-        bottom: 0;
-        background: url('images/bg_dessert.jpg') center/cover no-repeat;
-        opacity: 0.2;
-        z-index: -1;
-        filter: blur(5px);
-    }
-    
-    .choice-btn:hover {
-        transform: translateX(10px);
-        box-shadow: 0 10px 30px rgba(255,215,0,0.3);
-    }
-    
-    .character:hover {
-        transform: scale(1.02);
-        transition: transform 0.3s;
-    }
-}
-
-@media (min-height: 1000px) {
-    .game-container {
-        height: 1000px;
-    }
-    
-    .game-screen {
-        padding: 30px;
-    }
-    
-    .scene {
-        padding: 30px;
-    }
-    
-    .character-avatar {
-        width: 100px;
-        height: 100px;
-    }
-}
-
-@media (orientation: landscape) and (max-height: 600px) {
-    .game-container {
-        height: 100vh;
-        max-width: 100%;
-        border-radius: 0;
-    }
-    
-    .game-screen {
-        padding: 15px;
-    }
-    
-    .character-avatar {
-        width: 50px;
-        height: 50px;
-    }
-    
-    .choice-btn {
-        padding: 12px;
-    }
-    
-    .stats {
-        font-size: 11px;
-    }
-}
-
-@media (hover: hover) and (pointer: fine) {
-    .choice-btn {
-        transition: all 0.2s;
-    }
-    
-    .choice-btn:hover {
-        background: rgba(255, 215, 0, 0.25);
-        border-color: var(--gold);
-        transform: translateX(8px);
-    }
-    
-    .control-btn:hover {
-        background: rgba(255, 215, 0, 0.15);
-        transform: scale(1.15);
-    }
-    
-    .inventory-item:hover {
-        background: rgba(255, 215, 0, 0.4);
-        transform: scale(1.05);
-        transition: all 0.2s;
-    }
-}
-
-@media (min-width: 2560px) {
-    body {
-        transform: scale(1.2);
-    }
-    
-    .game-container {
-        box-shadow: 0 50px 100px rgba(0,0,0,0.8);
-    }
-}
-
-@media (min-width: 1025px) {
-    ::-webkit-scrollbar {
-        width: 10px;
-    }
-    
-    ::-webkit-scrollbar-track {
-        background: #1a1a1a;
-    }
-    
-    ::-webkit-scrollbar-thumb {
-        background: var(--gold-dark);
-        border-radius: 5px;
-    }
-    
-    ::-webkit-scrollbar-thumb:hover {
-        background: var(--gold);
-    }
-}
-
-
-@media (min-width: 1025px) {
-    .game-container {
-        animation: desktopAppear 0.8s ease-out;
-    }
-    
-    @keyframes desktopAppear {
-        from {
-            opacity: 0;
-            transform: translateY(30px) scale(0.95);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0) scale(1);
-        }
-    }
-}
-
-
-@media (min-width: 1025px) {
-    .scene-description {
-        font-size: 18px;
-        line-height: 1.7;
-    }
-    
-    .character-speech p {
-        font-size: 17px;
-    }
-    
-    .ending-title {
-        font-size: 42px;
-    }
-}
-
-/* Мне было очень лень исправлять что-то сверху и я решила не заморачиваться и добавить нужное тут. Если код читает кто-то кто разбирается в этом - закрой пж мой код и не смотри */
-body {
-    font-family: 'Roboto', sans-serif;
-    background: #1a1a1a;
-    color: var(--text-light);
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    margin: 0;
-    padding: 0;
-}
-
-.game-container {
-    width: 100%;
-    max-width: 430px;
-    height: 800px; 
-    background: linear-gradient(145deg, #0f0f1e 0%, #1a1a2e 100%);
-    border-radius: 40px;
-    overflow: hidden;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
-    position: relative;
-    border: 2px solid var(--gold-dark);
-    margin: 20px auto; 
-}
-
-/* Адаптация для мобильных */
-@media (max-width: 430px) {
-    .game-container {
-        height: 100vh; 
-        border-radius: 0;
-        max-width: 100%;
-        border: none;
-        margin: 0;
-    }
-}
-
 /* Адаптация для планшетов */
 @media (min-width: 431px) and (max-width: 1024px) {
     .game-container {
         max-width: 600px;
-        height: 750px; 
+        height: 750px;
+        margin: 30px auto;
+    }
+    
+    .scene-title {
+        font-size: 30px;
+    }
+    
+    .character-avatar {
+        width: 75px;
+        height: 75px;
+    }
+    
+    .choice-btn {
+        font-size: 17px;
+        padding: 18px;
+    }
+}
+
+/* Адаптация для десктопа */
+@media (min-width: 1025px) {
+    body {
+        background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        padding: 20px;
+    }
+    
+    .game-container {
+        max-width: 800px;
+        width: 90%;
+        height: 700px;
+        margin: 20px auto;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+    }
+    
+    .scene-description {
+        font-size: 16px;
+    }
+    
+    .character-speech p {
+        font-size: 15px;
+    }
+    
+    .ending-title {
+        font-size: 36px;
+    }
+}
+
+
+@media (min-width: 1400px) {
+    .game-container {
+        max-width: 900px;
+        height: 750px;
         margin: 30px auto;
     }
 }
 
 
-@media (min-width: 1025px) {
-    .game-container {
-        max-width: 800px;
-        width: 90%;
-        height: 700px;
-        margin: 40px auto;
-    }
-}
-
-/* Очень большие экраны */
-@media (min-width: 1400px) {
-    .game-container {
-        max-width: 900px;
-        height: 750px;
-        margin: 50px auto;
-    }
-}
-
-
-.game-screen {
-    flex: 1;
-    padding: 20px;
-    overflow-y: auto;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-    scroll-behavior: smooth;
-}
-
-
-.bottom-panel {
-    background: rgba(10,10,20,0.98);
-    backdrop-filter: blur(10px);
-    border-top: 1px solid var(--gold-dark);
-    z-index: 5;
-    flex-shrink: 0;
-}
-
-/* Кнопка для раскрытия нижней панели */
-.panel-toggle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    padding: 2px 0; 
-    background: rgba(0,0,0,0.5);
-    cursor: pointer;
-    color: var(--gold);
-    font-size: 11px;
-    border-bottom: 1px solid var(--gold-dark);
-}
-
-
-.panel-content {
-    display: none;
-    padding: 3px 15px;
-}
-
-.panel-content.expanded {
-    display: block;
-}
-
-/* Адаптация для очень маленьких экранов */
 @media (max-height: 700px) {
     .game-container {
         height: 600px;
@@ -952,10 +696,11 @@ body {
     
     .game-screen {
         padding: 15px;
+        gap: 12px;
     }
     
     .scene {
-        padding: 12px;
+        padding: 15px;
     }
 }
 
@@ -966,5 +711,62 @@ body {
     
     .game-screen {
         padding: 10px;
+        gap: 10px;
+    }
+    
+    .scene {
+        padding: 12px;
+    }
+}
+
+
+@media (orientation: landscape) and (max-height: 600px) {
+    .game-container {
+        height: 100vh;
+        max-width: 100%;
+        border-radius: 0;
+        margin: 0;
+    }
+    
+    .game-screen {
+        padding: 10px;
+        gap: 8px;
+    }
+    
+    .character-avatar {
+        width: 45px;
+        height: 45px;
+    }
+    
+    .choice-btn {
+        padding: 10px;
+        font-size: 14px;
+    }
+    
+    .stats {
+        font-size: 11px;
+    }
+}
+
+
+@media (hover: hover) and (pointer: fine) {
+    .choice-btn {
+        transition: all 0.2s;
+    }
+    
+    .choice-btn:hover {
+        background: rgba(255, 215, 0, 0.2);
+        border-color: var(--gold);
+        transform: translateX(5px);
+    }
+    
+    .control-btn:hover {
+        background: rgba(255, 215, 0, 0.15);
+        transform: scale(1.1);
+    }
+    
+    .inventory-item:hover {
+        background: rgba(255, 215, 0, 0.3);
+        transform: scale(1.02);
     }
 }
