@@ -7,8 +7,10 @@
 :root {
     --gold: #ffd700;
     --gold-dark: #b8860b;
-    --bg-dark: #1a1a1a;
-    --bg-card: #2a2a2a;
+    --bg-dark: rgba(0, 0, 0, 0.7);
+    --bg-card: rgba(42, 42, 42, 0.85);
+    --text-light: #ffffff;
+    --text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
     --danger: #f44336;
     --success: #4caf50;
     --info: #2196f3;
@@ -18,8 +20,8 @@
 
 body {
     font-family: 'Roboto', sans-serif;
-    background: var(--bg-dark);
-    color: #fff;
+    background: #1a1a1a;
+    color: var(--text-light);
     min-height: 100vh;
     display: flex;
     justify-content: center;
@@ -95,10 +97,12 @@ body {
     display: flex;
     align-items: center;
     gap: 4px;
-    background: rgba(255,255,255,0.1);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
     padding: 5px 10px;
     border-radius: 20px;
     border: 1px solid rgba(255,215,0,0.3);
+    text-shadow: var(--text-shadow);
 }
 
 /* Модальное окно */
@@ -127,6 +131,7 @@ body {
     gap: 15px;
     border: 2px solid var(--gold);
     box-shadow: 0 0 50px rgba(255,215,0,0.2);
+    backdrop-filter: blur(10px);
 }
 
 .modal-content h3 {
@@ -134,13 +139,14 @@ body {
     color: var(--gold);
     margin-bottom: 10px;
     font-size: 24px;
+    text-shadow: var(--text-shadow);
 }
 
 .modal-content input {
     padding: 15px;
     border-radius: 15px;
     border: none;
-    background: #3a3a4a;
+    background: rgba(58, 58, 74, 0.9);
     color: white;
     font-size: 16px;
     border: 1px solid transparent;
@@ -177,16 +183,86 @@ body {
     flex: 1;
     padding: 20px;
     overflow-y: auto;
-    background: rgba(0,0,0,0.7);
+    position: relative;
     display: flex;
     flex-direction: column;
     gap: 20px;
     scroll-behavior: smooth;
 }
 
+
+/* Фоновые изображения для сцен */
+.game-screen[data-scene="start"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_bar.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="act1"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_outside_casino.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="vito_meeting"],
+.game-screen[data-scene="test_skill"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_inside_casino.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="week_later"],
+.game-screen[data-scene="cheater"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_inside_casino.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="documents"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('images/bg_office.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="don_meeting"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
+                url('images/bg_interrogate_room.jpg') center/cover no-repeat fixed;
+}
+
+/* Фоны для концовок */
+.game-screen[data-ending="СДЕЛКА"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_dessert.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-ending="ПУЛИТЦЕР"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_airport.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-ending="СВИДЕТЕЛЬ"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_dessert.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-ending="ПРОВАЛ"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), 
+                url('images/bg_dessert.jpg') center/cover no-repeat fixed;
+}
+
+
+.game-screen[data-ending="СВИДЕТЕЛЬ"] .evidence-table {
+    background: linear-gradient(rgba(0, 0, 0, 0.4), rgba(0, 0, 0, 0.4)), 
+                url('images/bg_evidence_table.jpg') center/cover no-repeat;
+    border-radius: 20px;
+    padding: 20px;
+    margin: 15px 0;
+}
+
 /* Сцены */
 .scene {
     animation: fadeSlide 0.5s ease-out;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(5px);
+    border-radius: 20px;
+    padding: 20px;
+    border: 1px solid rgba(255, 215, 0, 0.3);
+    box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
 }
 
 @keyframes fadeSlide {
@@ -205,20 +281,22 @@ body {
     font-size: 28px;
     font-weight: 900;
     color: var(--gold);
-    text-shadow: 3px 3px 0 rgba(0,0,0,0.5);
+    text-shadow: 3px 3px 0 rgba(0,0,0,0.8);
     margin-bottom: 15px;
     text-align: center;
     letter-spacing: 2px;
 }
 
 .scene-description {
-    background: rgba(0,0,0,0.6);
+    background: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(3px);
     padding: 20px;
     border-radius: 20px;
     line-height: 1.6;
     font-size: 16px;
     border-left: 4px solid var(--gold);
     box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    text-shadow: var(--text-shadow);
 }
 
 /* Персонажи */
@@ -228,6 +306,10 @@ body {
     gap: 15px;
     margin-bottom: 15px;
     animation: slideIn 0.3s;
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(3px);
+    border-radius: 20px;
+    padding: 15px;
 }
 
 @keyframes slideIn {
@@ -253,12 +335,13 @@ body {
 }
 
 .character-speech {
-    background: rgba(255,215,0,0.1);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
     padding: 15px;
     border-radius: 20px;
     border-left: 3px solid var(--gold);
     flex: 1;
-    backdrop-filter: blur(5px);
+    text-shadow: var(--text-shadow);
 }
 
 .character-name {
@@ -283,8 +366,9 @@ body {
 }
 
 .choice-btn {
-    background: linear-gradient(145deg, #2a2a3a, #1a1a2a);
-    border: 2px solid rgba(255,215,0,0.3);
+    background: rgba(0, 0, 0, 0.2); 
+    backdrop-filter: blur(5px);
+    border: 2px solid rgba(255,215,0,0.2);
     color: white;
     padding: 18px;
     border-radius: 15px;
@@ -294,10 +378,11 @@ body {
     text-align: left;
     font-weight: 500;
     box-shadow: 0 5px 10px rgba(0,0,0,0.2);
+    text-shadow: var(--text-shadow);
 }
 
 .choice-btn:hover {
-    background: linear-gradient(145deg, #3a3a4a, #2a2a3a);
+    background: rgba(255, 215, 0, 0.2); 
     border-color: var(--gold);
     transform: translateX(5px);
     box-shadow: 0 8px 20px rgba(255,215,0,0.2);
@@ -305,7 +390,8 @@ body {
 
 /* Концовки */
 .ending {
-    background: linear-gradient(145deg, #1a1a2e, #2a1a3a);
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(5px);
     padding: 30px;
     border-radius: 30px;
     text-align: center;
@@ -337,18 +423,20 @@ body {
 }
 
 .ending-stat {
-    background: rgba(255,215,0,0.1);
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(3px);
     padding: 12px 20px;
     border-radius: 30px;
     border: 1px solid var(--gold);
     font-size: 16px;
+    text-shadow: var(--text-shadow);
 }
 
 /* Инвентарь */
 .inventory {
     background: rgba(10,10,20,0.95);
-    border-top: 2px solid var(--gold);
     backdrop-filter: blur(10px);
+    border-top: 2px solid var(--gold);
     transition: all 0.3s;
     z-index: 5;
 }
@@ -362,6 +450,7 @@ body {
     user-select: none;
     font-weight: 600;
     color: var(--gold);
+    text-shadow: var(--text-shadow);
 }
 
 .inventory-items {
@@ -374,13 +463,14 @@ body {
 }
 
 .inventory-item {
-    background: rgba(255,215,0,0.15);
+    background: rgba(255, 215, 0, 0.2);
+    backdrop-filter: blur(3px);
     border: 1px solid var(--gold);
     padding: 8px 16px;
     border-radius: 30px;
     font-size: 14px;
-    backdrop-filter: blur(5px);
     animation: popIn 0.3s;
+    text-shadow: var(--text-shadow);
 }
 
 @keyframes popIn {
@@ -400,6 +490,7 @@ body {
     justify-content: space-around;
     padding: 15px;
     background: rgba(0,0,0,0.9);
+    backdrop-filter: blur(5px);
     border-top: 1px solid var(--gold-dark);
 }
 
@@ -417,6 +508,7 @@ body {
     display: flex;
     align-items: center;
     justify-content: center;
+    text-shadow: var(--text-shadow);
 }
 
 .control-btn:hover {

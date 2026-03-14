@@ -214,7 +214,7 @@ function resetGame() {
 
 
 function showMessage(text, type = 'info') {
-    
+
     const oldMessages = document.querySelectorAll('.message');
     oldMessages.forEach(msg => msg.remove());
     
@@ -292,6 +292,9 @@ function loadScene(sceneId) {
     }
     
     currentScene = sceneId;
+    
+    gameScreen.setAttribute('data-scene', sceneId);
+    gameScreen.removeAttribute('data-ending');
     
     if (gameState.ending) {
         showEnding(gameState.ending);
@@ -512,7 +515,7 @@ function getDocumentsScene() {
 }
 
 function getDonMeetingScene() {
-    
+
     const evidenceText = gameState.stats.evidence >= 3 
         ? 'И я знаю, что у тебя есть мои бумаги. Ты журналист AFP.' 
         : 'Ты слишком много смотришь по сторонам для простого работника.';
@@ -553,7 +556,7 @@ function getDonMeetingScene() {
 function choiceMade(choice) {
     console.log('Choice made:', choice);
     
-    
+
     gameState.choices.push(choice);
     
     switch(choice) {
@@ -795,6 +798,7 @@ function choiceMade(choice) {
             showMessage('Ошибка выбора', 'error');
     }
     
+
     updateUI();
     updateInventory();
     autoSave();
@@ -859,8 +863,13 @@ function showEnding(type) {
     const gameScreen = document.getElementById('gameScreen');
     gameState.ending = type;
     
+  
+    gameScreen.setAttribute('data-ending', type);
+    gameScreen.removeAttribute('data-scene');
+    
     let endingTitle = '';
     let endingDescription = '';
+    let evidenceTable = '';
     
     switch(type) {
         case 'СДЕЛКА: ЧЕЛОВЕК МАФИИ':
@@ -884,7 +893,8 @@ function showEnding(type) {
                 Дона арестовывают, казино опечатывают.<br>
                 AFP даёт вам Пулитцеровскую премию.<br>
                 Но мафия объявила награду 100 000$ за вашу голову.<br>
-                Вы живёте под охраной, меняя квартиры каждую неделю.
+                Вы живёте под охраной, меняя квартиры каждую неделю.<br>
+                Самолёт в аэропорту ждёт вашего отлёта в неизвестность...
             `;
             break;
             
@@ -895,7 +905,29 @@ function showEnding(type) {
                 ФБР берёт Дона по вашим материалам.<br>
                 Вы входите в программу защиты свидетелей.<br>
                 Новое имя, новый город, новая жизнь.<br>
-                AFP так и не узнает, кто провёл расследование.
+                AFP так и не узнает, кто провёл расследование.<br>
+                Пустыня Невады остаётся позади...
+            `;
+            
+
+            evidenceTable = `
+                <div class="evidence-table">
+                    <h3 style="color: #ffd700; margin-bottom: 15px;">📋 Вещественные доказательства</h3>
+                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
+                        ${gameState.bag.filter(item => 
+                            item.includes('улик') || 
+                            item.includes('схем') || 
+                            item.includes('бухгалтер') ||
+                            item.includes('информация') ||
+                            item.includes('бумаг') ||
+                            item.includes('документ')
+                        ).map(item => `
+                            <div class="inventory-item" style="background: rgba(255,215,0,0.3);">
+                                🔍 ${item}
+                            </div>
+                        `).join('')}
+                    </div>
+                </div>
             `;
             break;
             
@@ -910,7 +942,8 @@ function showEnding(type) {
                 Вас раскрыли. Мафия не прощает ошибок.<br>
                 Ваше тело найдено в пустыне Невада.<br>
                 AFP отрицает, что вы были их сотрудником.<br>
-                Расследование похоронено вместе с вами.
+                Расследование похоронено вместе с вами.<br>
+                Только ветер гуляет по пустыне...
             `;
             break;
             
@@ -924,6 +957,8 @@ function showEnding(type) {
             <div class="ending">
                 <div class="ending-title">${endingTitle}</div>
                 <div class="scene-description">${endingDescription}</div>
+                
+                ${evidenceTable}
                 
                 <div class="ending-stats">
                     <div class="ending-stat">📄 Улики: ${gameState.stats.evidence}/3</div>
