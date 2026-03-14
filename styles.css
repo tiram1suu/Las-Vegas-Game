@@ -770,3 +770,34 @@ body {
         transform: scale(1.02);
     }
 }
+
+@media (min-width: 1025px) {
+    body {
+        background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+        padding: 20px;
+        position: relative;
+    }
+    
+    body::before {
+        content: '';
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url('images/bg_dessert.jpg') center/cover no-repeat;
+        opacity: 0.2;
+        z-index: -1;
+        filter: blur(5px);
+    }
+    
+    .game-container {
+        max-width: 800px;
+        width: 90%;
+        height: 700px;
+        margin: 20px auto;
+        box-shadow: 0 30px 60px rgba(0,0,0,0.6);
+        position: relative;
+        z-index: 1;
+    }
+}
