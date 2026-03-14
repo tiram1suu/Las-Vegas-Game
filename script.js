@@ -512,6 +512,11 @@ function getDocumentsScene() {
 }
 
 function getDonMeetingScene() {
+    
+    const evidenceText = gameState.stats.evidence >= 3 
+        ? 'И я знаю, что у тебя есть мои бумаги. Ты журналист AFP.' 
+        : 'Ты слишком много смотришь по сторонам для простого работника.';
+    
     return `
         <div class="scene">
             <div class="scene-description">
@@ -524,6 +529,7 @@ function getDonMeetingScene() {
                 <div class="character-speech">
                     <span class="character-name">Дон</span>
                     <p>Садись. Ты неплохо работаешь. Но я знаю, кто ты.</p>
+                    <p>${evidenceText}</p>
                     <p>У тебя два выхода. Работать на меня или умереть. Что выбираешь?</p>
                 </div>
             </div>
@@ -546,6 +552,9 @@ function getDonMeetingScene() {
 // Главная функция обработки выборов 
 function choiceMade(choice) {
     console.log('Choice made:', choice);
+    
+    
+    gameState.choices.push(choice);
     
     switch(choice) {
         // Начало
@@ -573,11 +582,11 @@ function choiceMade(choice) {
                 loadScene('vito_meeting');
             } else {
                 gameState.story.push('Денег на взятку не хватило');
-                showMessage('Недостаточно денег!', 'error');
+                showMessage('Недостаточно денег! Ищу чёрный ход...', 'error');
                 
                 setTimeout(() => {
                     choiceMade('guard_backdoor');
-                }, 1500);
+                }, 2000);
             }
             break;
             
@@ -596,8 +605,8 @@ function choiceMade(choice) {
             showMessage('💀 ПРОВАЛ...', 'danger');
             setTimeout(() => {
                 showEnding(gameState.ending);
-            }, 1000);
-            break;
+            }, 1500);
+            return;
             
         case 'vito_legend':
             gameState.story.push('Встреча с Вито: легенда о крупье');
@@ -695,9 +704,10 @@ function choiceMade(choice) {
                 showMessage('💀 ВАС ПОЙМАЛИ...', 'danger');
                 setTimeout(() => {
                     showEnding(gameState.ending);
-                }, 1000);
+                }, 1500);
                 return;
             }
+            loadScene('don_meeting');
             break;
             
         case 'docs_select':
@@ -705,12 +715,14 @@ function choiceMade(choice) {
             gameState.stats.evidence += 2;
             gameState.bag.push('схемы отмывания денег');
             showMessage('📄 +2 улики', 'evidence');
+            loadScene('don_meeting');
             break;
             
         case 'docs_leave':
             gameState.story.push('Упустил шанс');
             gameState.stats.evidence = Math.max(0, gameState.stats.evidence - 1);
             showMessage('📄 -1 улика', 'error');
+            loadScene('don_meeting');
             break;
             
         // Встреча с Доном
@@ -720,7 +732,7 @@ function choiceMade(choice) {
             showMessage('⚜️ СДЕЛКА С ДЬЯВОЛОМ...', 'warning');
             setTimeout(() => {
                 showEnding(gameState.ending);
-            }, 1000);
+            }, 1500);
             return;
             
         case 'don_refuse':
@@ -745,40 +757,43 @@ function choiceMade(choice) {
             gameState.ending = 'ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ';
             gameState.story.push('Опубликовал всё');
             showEnding('ПУЛИТЦЕР');
-            break;
+            return;
             
         case 'final_compromise':
             gameState.ending = 'СДЕЛКА: БОГАТСТВО И СОВЕСТЬ';
             gameState.story.push('Пошёл на сделку');
             gameState.stats.money += 200000;
             showEnding('СДЕЛКА');
-            break;
+            return;
             
         case 'final_destroy':
             gameState.ending = 'ПРОВАЛ: НИЧТО';
             gameState.story.push('Уничтожил всё');
             showEnding('ПРОВАЛ');
-            break;
+            return;
             
         case 'trick_steal':
             gameState.ending = 'ПРОВАЛ: ПОЙМАН';
             gameState.story.push('Попытка кражи');
             showEnding('ПРОВАЛ');
-            break;
+            return;
             
         case 'trick_police':
             gameState.ending = 'СВИДЕТЕЛЬ: НОВАЯ ЖИЗНЬ';
             gameState.story.push('Пошёл в полицию');
             showEnding('СВИДЕТЕЛЬ');
-            break;
+            return;
             
         case 'trick_run':
             gameState.ending = 'ПРОВАЛ: ТРУС';
             gameState.story.push('Сбежал');
             showEnding('ПРОВАЛ');
-            break;
+            return;
+            
+        default:
+            console.log('Unknown choice:', choice);
+            showMessage('Ошибка выбора', 'error');
     }
-    
     
     updateUI();
     updateInventory();
@@ -793,7 +808,8 @@ function showFinalChoice() {
         <div class="scene">
             <div class="scene-title">ПОСЛЕДНИЙ ШАНС</div>
             <div class="scene-description">
-                В мотеле. Кровь на рубашке. Материалы с вами.
+                В мотеле. Кровь на рубашке. Материалы с вами.<br>
+                Улик собрано: ${gameState.stats.evidence}/3
             </div>
             
             <div class="choices">
@@ -914,11 +930,12 @@ function showEnding(type) {
                     <div class="ending-stat">👑 Уважение: ${gameState.stats.respect}/3</div>
                     <div class="ending-stat">⚠️ Риск: ${gameState.stats.risk}/3</div>
                     <div class="ending-stat">💰 Деньги: ${gameState.stats.money}$</div>
+                    <div class="ending-stat">🎭 Ложь: ${gameState.stats.lies}</div>
                 </div>
                 
                 <div class="scene-description">
                     <strong>Ключевые события:</strong><br>
-                    ${gameState.story.slice(-3).map(e => '• ' + e).join('<br>')}
+                    ${gameState.story.slice(-5).map(e => '• ' + e).join('<br>')}
                 </div>
                 
                 <div class="inventory-items" style="justify-content: center; margin: 20px 0;">
