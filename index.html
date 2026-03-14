@@ -40,19 +40,28 @@
         </div>
 
         <!-- Панель управления -->
-        <div class="controls">
-            <button class="control-btn save" onclick="saveGame()" title="Сохранить">💾</button>
-            <button class="control-btn load" onclick="loadGame()" title="Загрузить">📂</button>
-            <button class="control-btn reset" onclick="resetGame()" title="Новая игра">🔄</button>
-        </div>
-
-        <!-- Инвентарь -->
-        <div class="inventory" id="inventory">
-            <div class="inventory-header" onclick="toggleInventory()">
-                <span>🎒 Инвентарь</span>
-                <span class="toggle-icon">▼</span>
+        <div class="bottom-panel">
+            <div class="panel-toggle" onclick="toggleBottomPanel()">
+                <span>▲</span> МЕНЮ <span>▲</span>
             </div>
-            <div class="inventory-items" id="inventoryItems"></div>
+    
+            <div class="panel-content" id="bottomPanelContent">
+                <!-- Инвентарь -->
+                <div class="inventory" id="inventory">
+                    <div class="inventory-header" onclick="toggleInventory()">
+                        <span>🎒 Инвентарь</span>
+                        <span class="toggle-icon">▶</span>
+                    </div>
+                    <div class="inventory-items" id="inventoryItems"></div>
+                </div>
+        
+                <!-- Кнопки управления -->
+                <div class="controls">
+                    <button class="control-btn save" onclick="saveGame()" title="Сохранить">💾</button>
+                    <button class="control-btn load" onclick="loadGame()" title="Загрузить">📂</button>
+                    <button class="control-btn reset" onclick="resetGame()" title="Новая игра">🔄</button>
+                </div>
+            </div>
         </div>
     </div>
 

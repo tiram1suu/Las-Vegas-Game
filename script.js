@@ -1032,3 +1032,77 @@ function autoSave() {
         localStorage.setItem('vegas_users', JSON.stringify(users));
     }
 }
+
+
+let isPanelExpanded = false;
+
+
+function toggleBottomPanel() {
+    const panelContent = document.getElementById('bottomPanelContent');
+    const toggleBtn = document.querySelector('.panel-toggle span:first-child');
+    
+    if (panelContent) {
+        panelContent.classList.toggle('expanded');
+        isPanelExpanded = panelContent.classList.contains('expanded');
+        
+       
+        const arrows = document.querySelectorAll('.panel-toggle span');
+        if (arrows.length >= 2) {
+            arrows[0].textContent = isPanelExpanded ? '▼' : '▲';
+            arrows[1].textContent = isPanelExpanded ? '▼' : '▲';
+        }
+    }
+}
+
+
+function toggleInventory() {
+    const items = document.getElementById('inventoryItems');
+    const icon = document.querySelector('.inventory-header .toggle-icon');
+    
+    if (items) {
+        items.classList.toggle('show');
+        if (icon) {
+            icon.textContent = items.classList.contains('show') ? '▼' : '▶';
+        }
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', () => {
+    console.log('Game initialized');
+    updateUI();
+    loadScene('start');
+    updateInventory();
+    checkSavedGame();
+    
+
+    const panelContent = document.getElementById('bottomPanelContent');
+    if (panelContent) {
+        panelContent.classList.remove('expanded');
+    }
+ 
+
+    const inventoryItems = document.getElementById('inventoryItems');
+    if (inventoryItems) {
+        inventoryItems.classList.remove('show');
+    }
+});
+
+
+function updateInventory() {
+    const inventoryDiv = document.getElementById('inventoryItems');
+    if (!inventoryDiv) return;
+    
+    inventoryDiv.innerHTML = '';
+    
+    if (gameState.bag.length === 0) {
+        inventoryDiv.innerHTML = '<div class="inventory-item">🎒 Пусто</div>';
+    } else {
+        gameState.bag.forEach(item => {
+            const itemDiv = document.createElement('div');
+            itemDiv.className = 'inventory-item';
+            itemDiv.textContent = item;
+            inventoryDiv.appendChild(itemDiv);
+        });
+    }
+}
