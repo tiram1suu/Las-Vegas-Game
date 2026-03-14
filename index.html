@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <title>Las Vegas Story</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="game-container">
+        <!-- Шапка с авторизацией -->
+        <div class="header">
+            <div class="user-info" id="userInfo">
+                <span class="user-name" id="userName">Гость</span>
+                <button class="login-btn" id="loginBtn" onclick="showLoginModal()">Войти</button>
+            </div>
+            <div class="stats">
+                <span class="stat-item" title="Улики">📄 <span id="evidenceStat">0</span>/3</span>
+                <span class="stat-item" title="Уважение мафии">👑 <span id="respectStat">0</span>/3</span>
+                <span class="stat-item" title="Риск">⚠️ <span id="riskStat">0</span>/3</span>
+                <span class="stat-item" title="Деньги">💰 <span id="moneyStat">500</span>$</span>
+            </div>
+        </div>
+
+        <!-- Модальное окно входа -->
+        <div id="loginModal" class="modal">
+            <div class="modal-content">
+                <h3>Вход в игру</h3>
+                <input type="text" id="username" placeholder="Имя пользователя">
+                <input type="password" id="password" placeholder="Пароль">
+                <button class="modal-btn primary" onclick="login()">Войти</button>
+                <button class="modal-btn" onclick="register()">Регистрация</button>
+                <button class="modal-btn secondary" onclick="closeLoginModal()">Закрыть</button>
+            </div>
+        </div>
+
+        <!-- Основной экран игры -->
+        <div class="game-screen" id="gameScreen">
+            
+        </div>
+
+        <!-- Панель управления -->
+        <div class="controls">
+            <button class="control-btn save" onclick="saveGame()" title="Сохранить">💾</button>
+            <button class="control-btn load" onclick="loadGame()" title="Загрузить">📂</button>
+            <button class="control-btn reset" onclick="resetGame()" title="Новая игра">🔄</button>
+        </div>
+
+        <!-- Инвентарь -->
+        <div class="inventory" id="inventory">
+            <div class="inventory-header" onclick="toggleInventory()">
+                <span>🎒 Инвентарь</span>
+                <span class="toggle-icon">▼</span>
+            </div>
+            <div class="inventory-items" id="inventoryItems"></div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

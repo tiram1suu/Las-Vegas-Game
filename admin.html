@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin · Las Vegas Story</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+        
+        body {
+            background: linear-gradient(135deg, #0f0f1e 0%, #1a1a2e 100%);
+            color: white;
+            min-height: 100vh;
+            padding: 30px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        h1 {
+            color: #ffd700;
+            font-size: 36px;
+            margin-bottom: 10px;
+            text-shadow: 0 0 20px rgba(255,215,0,0.3);
+        }
+        
+        .subtitle {
+            color: #888;
+            margin-bottom: 40px;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: rgba(255,255,255,0.05);
+            border-radius: 20px;
+            padding: 25px;
+            border: 2px solid rgba(255,215,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        
+        .stat-card h3 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 20px;
+        }
+        
+        .stat-number {
+            font-size: 48px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .stat-label {
+            color: #888;
+            margin-top: 5px;
+        }
+        
+        .user-list {
+            background: rgba(0,0,0,0.5);
+            border-radius: 30px;
+            padding: 30px;
+            border: 2px solid rgba(255,215,0,0.2);
+        }
+        
+        .user-list h2 {
+            color: #ffd700;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        
+        .user-item {
+            display: grid;
+            grid-template-columns: auto 1fr auto auto;
+            gap: 20px;
+            align-items: center;
+            padding: 15px;
+            border-bottom: 1px solid rgba(255,215,0,0.1);
+            transition: 0.3s;
+        }
+        
+        .user-item:hover {
+            background: rgba(255,215,0,0.05);
+        }
+        
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(145deg, #ffd700, #b8860b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        .user-info {
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .user-name {
+            font-weight: bold;
+            color: #ffd700;
+        }
+        
+        .user-date {
+            font-size: 12px;
+            color: #888;
+        }
+        
+        .user-stats {
+            display: flex;
+            gap: 15px;
+            color: #888;
+        }
+        
+        .stat-tag {
+            background: rgba(255,215,0,0.1);
+            padding: 3px 8px;
+            border-radius: 10px;
+            font-size: 12px;
+        }
+        
+        .delete-btn {
+            background: #f44336;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        
+        .delete-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(244,67,54,0.5);
+        }
+        
+        .reset-btn {
+            background: #ffd700;
+            color: black;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            font-size: 16px;
+        }
+        
+        .reset-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 30px rgba(255,215,0,0.5);
+        }
+        
+        .ending-distribution {
+            margin-top: 20px;
+        }
+        
+        .ending-bar {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .ending-name {
+            width: 120px;
+        }
+        
+        .ending-progress {
+            flex: 1;
+            height: 25px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        
+        .ending-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #ffd700, #ffaa00);
+            transition: width 0.3s;
+        }
+        
+        .ending-count {
+            width: 50px;
+            text-align: right;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>⚡ ADMlN PANEL</h1>
+        <div class="subtitle">Las Vegas Story · Управление игрой</div>
+        
+        <div class="stats-grid" id="stats">
+            <div class="stat-card">
+                <h3>👥 Всего пользователей</h3>
+                <div class="stat-number" id="totalUsers">0</div>
+                <div class="stat-label">зарегистрировано</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>🎮 Активных игр</h3>
+                <div class="stat-number" id="activeGames">0</div>
+                <div class="stat-label">игроков онлайн</div>
+            </div>
+            
+            <div class="stat-card">
+                <h3>🏆 Завершено</h3>
+                <div class="stat-number" id="completedGames">0</div>
+                <div class="stat-label">получено концовок</div>
+            </div>
+        </div>
+        
+        <div class="user-list">
+            <h2>👥 Список пользователей</h2>
+            <div id="userList"></div>
+            
+            <div style="margin-top: 30px;">
+                <h3 style="color: #ffd700; margin-bottom: 15px;">📊 Статистика концовок</h3>
+                <div id="endingStats"></div>
+            </div>
+            
+            <button class="reset-btn" onclick="resetAllGames()">
+                🔄 Сбросить все игры
+            </button>
+        </div>
+    </div>
+    
+    <script>
+        function loadStats() {
+            const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
+            
+            // Основная статистика
+            document.getElementById('totalUsers').textContent = Object.keys(users).length;
+            document.getElementById('activeGames').textContent = Object.values(users).filter(u => u.gameState && !u.gameState.ending).length;
+            document.getElementById('completedGames').textContent = Object.values(users).filter(u => u.gameState && u.gameState.ending).length;
+            
+            // Список пользователей
+            let userHtml = '';
+            let endings = {};
+            
+            Object.entries(users).forEach(([username, data]) => {
+                const gameState = data.gameState || { stats: {}, ending: null };
+                const ending = gameState.ending || 'В процессе';
+                endings[ending] = (endings[ending] || 0) + 1;
+                
+                userHtml += `
+                    <div class="user-item">
+                        <div class="user-avatar">${username[0].toUpperCase()}</div>
+                        <div class="user-info">
+                            <span class="user-name">${username}</span>
+                            <span class="user-date">Создан: ${new Date(data.created).toLocaleDateString()}</span>
+                        </div>
+                        <div class="user-stats">
+                            <span class="stat-tag">📄 ${gameState.stats?.evidence || 0}</span>
+                            <span class="stat-tag">👑 ${gameState.stats?.respect || 0}</span>
+                            <span class="stat-tag">⚠️ ${gameState.stats?.risk || 0}</span>
+                            <span class="stat-tag">💰 ${gameState.stats?.money || 500}$</span>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 10px;">
+                            <span style="color: ${ending === 'В процессе' ? '#888' : '#ffd700'}">${ending}</span>
+                            <button class="delete-btn" onclick="deleteUser('${username}')">Удалить</button>
+                        </div>
+                    </div>
+                `;
+            });
+            
+            document.getElementById('userList').innerHTML = userHtml || '<p style="color: #888; text-align: center; padding: 30px;">Пользователей пока нет</p>';
+            
+            // Статистика концовок
+            let endingsHtml = '<div class="ending-distribution">';
+            const total = Object.values(endings).reduce((a, b) => a + b, 0);
+            
+            Object.entries(endings).forEach(([ending, count]) => {
+                const percentage = (count / total * 100).toFixed(1);
+                endingsHtml += `
+                    <div class="ending-bar">
+                        <span class="ending-name">${ending}</span>
+                        <div class="ending-progress">
+                            <div class="ending-fill" style="width: ${percentage}%"></div>
+                        </div>
+                        <span class="ending-count">${count}</span>
+                    </div>
+                `;
+            });
+            
+            endingsHtml += '</div>';
+            document.getElementById('endingStats').innerHTML = endingsHtml;
+        }
+        
+        function deleteUser(username) {
+            if (confirm(`Удалить пользователя ${username}?`)) {
+                const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
+                delete users[username];
+                localStorage.setItem('vegas_users', JSON.stringify(users));
+                loadStats();
+            }
+        }
+        
+        function resetAllGames() {
+            if (confirm('Сбросить прогресс всех пользователей?')) {
+                const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
+                Object.keys(users).forEach(username => {
+                    users[username].gameState = null;
+                });
+                localStorage.setItem('vegas_users', JSON.stringify(users));
+                localStorage.removeItem('vegas_lastGame');
+                loadStats();
+            }
+        }
+        
+        window.onload = loadStats;
+    </script>
+</body>
+</html>
