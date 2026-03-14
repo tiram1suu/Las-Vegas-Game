@@ -832,3 +832,139 @@ body {
         font-size: 42px;
     }
 }
+
+/* Мне было очень лень исправлять что-то сверху и я решила не заморачиваться и добавить нужное тут. Если код читает кто-то кто разбирается в этом - закрой пж мой код и не смотри */
+body {
+    font-family: 'Roboto', sans-serif;
+    background: #1a1a1a;
+    color: var(--text-light);
+    min-height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+}
+
+.game-container {
+    width: 100%;
+    max-width: 430px;
+    height: 800px; 
+    background: linear-gradient(145deg, #0f0f1e 0%, #1a1a2e 100%);
+    border-radius: 40px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+    position: relative;
+    border: 2px solid var(--gold-dark);
+    margin: 20px auto; 
+}
+
+/* Адаптация для мобильных */
+@media (max-width: 430px) {
+    .game-container {
+        height: 100vh; 
+        border-radius: 0;
+        max-width: 100%;
+        border: none;
+        margin: 0;
+    }
+}
+
+/* Адаптация для планшетов */
+@media (min-width: 431px) and (max-width: 1024px) {
+    .game-container {
+        max-width: 600px;
+        height: 750px; 
+        margin: 30px auto;
+    }
+}
+
+
+@media (min-width: 1025px) {
+    .game-container {
+        max-width: 800px;
+        width: 90%;
+        height: 700px;
+        margin: 40px auto;
+    }
+}
+
+/* Очень большие экраны */
+@media (min-width: 1400px) {
+    .game-container {
+        max-width: 900px;
+        height: 750px;
+        margin: 50px auto;
+    }
+}
+
+
+.game-screen {
+    flex: 1;
+    padding: 20px;
+    overflow-y: auto;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    scroll-behavior: smooth;
+}
+
+
+.bottom-panel {
+    background: rgba(10,10,20,0.98);
+    backdrop-filter: blur(10px);
+    border-top: 1px solid var(--gold-dark);
+    z-index: 5;
+    flex-shrink: 0;
+}
+
+/* Кнопка для раскрытия нижней панели */
+.panel-toggle {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2px 0; 
+    background: rgba(0,0,0,0.5);
+    cursor: pointer;
+    color: var(--gold);
+    font-size: 11px;
+    border-bottom: 1px solid var(--gold-dark);
+}
+
+
+.panel-content {
+    display: none;
+    padding: 3px 15px;
+}
+
+.panel-content.expanded {
+    display: block;
+}
+
+/* Адаптация для очень маленьких экранов */
+@media (max-height: 700px) {
+    .game-container {
+        height: 600px;
+    }
+    
+    .game-screen {
+        padding: 15px;
+    }
+    
+    .scene {
+        padding: 12px;
+    }
+}
+
+@media (max-height: 600px) {
+    .game-container {
+        height: 500px;
+    }
+    
+    .game-screen {
+        padding: 10px;
+    }
+}
