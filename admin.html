@@ -200,12 +200,42 @@
             width: 50px;
             text-align: right;
         }
+
+        .refresh-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            margin-bottom: 20px;
+            font-weight: bold;
+        }
+
+        .refresh-btn:hover {
+            background: #45a049;
+        }
+
+        .no-users {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-size: 18px;
+        }
+
+        .ending-stats {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
     </style>
 </head>
 <body>
     <div class="container">
         <h1>⚡ ADMlN PANEL</h1>
         <div class="subtitle">Las Vegas Story · Управление игрой</div>
+        
+        <button class="refresh-btn" onclick="loadStats()">🔄 Обновить данные</button>
         
         <div class="stats-grid" id="stats">
             <div class="stat-card">
@@ -217,7 +247,7 @@
             <div class="stat-card">
                 <h3>🎮 Активных игр</h3>
                 <div class="stat-number" id="activeGames">0</div>
-                <div class="stat-label">игроков онлайн</div>
+                <div class="stat-label">в процессе</div>
             </div>
             
             <div class="stat-card">
@@ -244,88 +274,129 @@
     
     <script>
         function loadStats() {
+            console.log('Loading stats...');
+            
             const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
+            console.log('Users from localStorage:', users);
             
-            // Основная статистика
-            document.getElementById('totalUsers').textContent = Object.keys(users).length;
-            document.getElementById('activeGames').textContent = Object.values(users).filter(u => u.gameState && !u.gameState.ending).length;
-            document.getElementById('completedGames').textContent = Object.values(users).filter(u => u.gameState && u.gameState.ending).length;
+            const totalUsers = Object.keys(users).length;
+            document.getElementById('totalUsers').textContent = totalUsers;
             
-            // Список пользователей
+            let activeGames = 0;
+            let completedGames = 0;
+            let endingsCount = {};
+            
+            Object.values(users).forEach(user => {
+                if (user.gameState) {
+                    if (user.gameState.ending) {
+                        completedGames++;
+                        endingsCount[user.gameState.ending] = (endingsCount[user.gameState.ending] || 0) + 1;
+                    } else {
+                        activeGames++;
+                    }
+                }
+            });
+            
+            document.getElementById('activeGames').textContent = activeGames;
+            document.getElementById('completedGames').textContent = completedGames;
+            
             let userHtml = '';
-            let endings = {};
             
-            Object.entries(users).forEach(([username, data]) => {
-                const gameState = data.gameState || { stats: {}, ending: null };
-                const ending = gameState.ending || 'В процессе';
-                endings[ending] = (endings[ending] || 0) + 1;
-                
-                userHtml += `
-                    <div class="user-item">
-                        <div class="user-avatar">${username[0].toUpperCase()}</div>
-                        <div class="user-info">
-                            <span class="user-name">${username}</span>
-                            <span class="user-date">Создан: ${new Date(data.created).toLocaleDateString()}</span>
-                        </div>
-                        <div class="user-stats">
-                            <span class="stat-tag">📄 ${gameState.stats?.evidence || 0}</span>
-                            <span class="stat-tag">👑 ${gameState.stats?.respect || 0}</span>
-                            <span class="stat-tag">⚠️ ${gameState.stats?.risk || 0}</span>
-                            <span class="stat-tag">💰 ${gameState.stats?.money || 500}$</span>
-                        </div>
-                        <div style="display: flex; align-items: center; gap: 10px;">
-                            <span style="color: ${ending === 'В процессе' ? '#888' : '#ffd700'}">${ending}</span>
+            if (totalUsers === 0) {
+                userHtml = '<div class="no-users">👀 Пользователей пока нет</div>';
+            } else {
+                Object.entries(users).forEach(([username, data]) => {
+                    const gameState = data.gameState || { stats: {}, ending: null };
+                    const ending = gameState.ending || 'В процессе';
+                    const created = data.created ? new Date(data.created).toLocaleString() : 'Неизвестно';
+                    
+                    userHtml += `
+                        <div class="user-item">
+                            <div class="user-avatar">${username[0].toUpperCase()}</div>
+                            <div class="user-info">
+                                <span class="user-name">${username}</span>
+                                <span class="user-date">Создан: ${created}</span>
+                            </div>
+                            <div class="user-stats">
+                                <span class="stat-tag" title="Улики">📄 ${gameState.stats?.evidence || 0}</span>
+                                <span class="stat-tag" title="Уважение">👑 ${gameState.stats?.respect || 0}</span>
+                                <span class="stat-tag" title="Риск">⚠️ ${gameState.stats?.risk || 0}</span>
+                                <span class="stat-tag" title="Деньги">💰 ${gameState.stats?.money || 500}$</span>
+                                <span class="stat-tag" title="Статус">${ending}</span>
+                            </div>
                             <button class="delete-btn" onclick="deleteUser('${username}')">Удалить</button>
                         </div>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             
-            document.getElementById('userList').innerHTML = userHtml || '<p style="color: #888; text-align: center; padding: 30px;">Пользователей пока нет</p>';
+            document.getElementById('userList').innerHTML = userHtml;
             
-            // Статистика концовок
             let endingsHtml = '<div class="ending-distribution">';
-            const total = Object.values(endings).reduce((a, b) => a + b, 0);
             
-            Object.entries(endings).forEach(([ending, count]) => {
-                const percentage = (count / total * 100).toFixed(1);
-                endingsHtml += `
-                    <div class="ending-bar">
-                        <span class="ending-name">${ending}</span>
-                        <div class="ending-progress">
-                            <div class="ending-fill" style="width: ${percentage}%"></div>
+            if (Object.keys(endingsCount).length === 0) {
+                endingsHtml += '<p style="color: #888;">Нет завершенных игр</p>';
+            } else {
+                const total = Object.values(endingsCount).reduce((a, b) => a + b, 0);
+                
+                Object.entries(endingsCount).forEach(([ending, count]) => {
+                    const percentage = ((count / total) * 100).toFixed(1);
+                    
+                    let shortEnding = ending;
+                    if (ending.length > 20) {
+                        shortEnding = ending.substring(0, 20) + '...';
+                    }
+                    
+                    endingsHtml += `
+                        <div class="ending-bar">
+                            <span class="ending-name" title="${ending}">${shortEnding}</span>
+                            <div class="ending-progress">
+                                <div class="ending-fill" style="width: ${percentage}%"></div>
+                            </div>
+                            <span class="ending-count">${count}</span>
                         </div>
-                        <span class="ending-count">${count}</span>
-                    </div>
-                `;
-            });
+                    `;
+                });
+            }
             
             endingsHtml += '</div>';
             document.getElementById('endingStats').innerHTML = endingsHtml;
         }
         
         function deleteUser(username) {
-            if (confirm(`Удалить пользователя ${username}?`)) {
+            if (confirm(`Удалить пользователя ${username}? Это действие нельзя отменить.`)) {
                 const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
                 delete users[username];
                 localStorage.setItem('vegas_users', JSON.stringify(users));
-                loadStats();
+                loadStats(); 
             }
         }
         
         function resetAllGames() {
-            if (confirm('Сбросить прогресс всех пользователей?')) {
+            if (confirm('Сбросить прогресс всех пользователей? Все сохранения будут удалены.')) {
                 const users = JSON.parse(localStorage.getItem('vegas_users')) || {};
+                
+                
                 Object.keys(users).forEach(username => {
                     users[username].gameState = null;
                 });
+                
                 localStorage.setItem('vegas_users', JSON.stringify(users));
-                localStorage.removeItem('vegas_lastGame');
-                loadStats();
+                localStorage.removeItem('vegas_lastGame'); 
+                
+                loadStats(); 
+                alert('Все игры сброшены!');
             }
         }
         
-        window.onload = loadStats;
+        
+        window.onload = function() {
+            console.log('Admin page loaded');
+            loadStats();
+            
+            
+            window.addEventListener('focus', loadStats);
+        };
     </script>
 </body>
 </html>
