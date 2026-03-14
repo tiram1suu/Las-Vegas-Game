@@ -202,10 +202,14 @@ body {
                 url('images/bg_outside_casino.jpg') center/cover no-repeat fixed;
 }
 
-.game-screen[data-scene="vito_meeting"],
-.game-screen[data-scene="test_skill"] {
+.game-screen[data-scene="vito_meeting"] {
     background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
                 url('images/bg_inside_casino.jpg') center/cover no-repeat fixed;
+}
+
+.game-screen[data-scene="test_skill"] {
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), 
+                url('images/bg_interrogate_room.jpg') center/cover no-repeat fixed;
 }
 
 .game-screen[data-scene="week_later"],
@@ -221,7 +225,7 @@ body {
 
 .game-screen[data-scene="don_meeting"] {
     background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), 
-                url('images/bg_interrogate_room.jpg') center/cover no-repeat fixed;
+                url('images/bg_office.jpg') center/cover no-repeat fixed;
 }
 
 /* Фоны для концовок */
