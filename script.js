@@ -887,7 +887,7 @@ function showEnding(type) {
             
         case 'ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ':
         case 'ПУЛИТЦЕР':
-            endingTitle = '🏆 ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ 🏆';
+            endingTitle = '🏆 ПУЛИТ. ПРЕМИЯ 🏆';
             endingDescription = `
                 Вы публикуете сенсационное расследование в Le Monde.<br>
                 Дона арестовывают, казино опечатывают.<br>
