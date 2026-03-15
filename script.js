@@ -497,7 +497,7 @@ function getCheaterScene() {
     return `
         <div class="scene">
             <div class="scene-description">
-                В один из дней вы замечаете, как игрок за вашим столом явно мухлюет – он слишком часто выигрывает. Ваши действия?
+                В один из дней вы замечаете, как игрок за столом явно мухлюет – он слишком часто выигрывает. Ваши действия?
             </div>
             
             <div class="choices">
@@ -816,7 +816,8 @@ function showFinalChoice() {
         <div class="scene">
             <div class="scene-title">ПОСЛЕДНИЙ ШАНС</div>
             <div class="scene-description">
-                В мотеле. Кровь на рубашке. Материалы с вами.<br>
+                Спустя сутки на вас совершено покушение в мотеле. Вы ранены, но остаетесь живы. 
+                Материалы с вами.<br>
                 Улик собрано: ${gameState.stats.evidence}
             </div>
             
