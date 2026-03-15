@@ -5,9 +5,9 @@ let gameState = {
     bag: ['пресс-карта AFP', 'диктофон', '500$ наличными'],
     story: [],
     stats: {
-        evidence: 0,
-        respect: 0,
-        risk: 0,
+        evidence: 0,    
+        respect: 0,   
+        risk: 0,        
         money: 500,
         lies: 0
     },
@@ -26,6 +26,18 @@ document.addEventListener('DOMContentLoaded', () => {
     loadScene('start');
     updateInventory();
     checkSavedGame();
+    
+    
+    const panelContent = document.getElementById('bottomPanelContent');
+    if (panelContent) {
+        panelContent.classList.remove('expanded');
+    }
+    
+    
+    const inventoryItems = document.getElementById('inventoryItems');
+    if (inventoryItems) {
+        inventoryItems.classList.remove('show');
+    }
 });
 
 // Функции обновления UI
@@ -76,7 +88,7 @@ function updateInventory() {
     }
 }
 
-// Функции авторизации 
+// Функции авторизации
 function showLoginModal() {
     const modal = document.getElementById('loginModal');
     if (modal) modal.style.display = 'flex';
@@ -214,7 +226,7 @@ function resetGame() {
 
 
 function showMessage(text, type = 'info') {
-
+    
     const oldMessages = document.querySelectorAll('.message');
     oldMessages.forEach(msg => msg.remove());
     
@@ -267,22 +279,35 @@ function showMessage(text, type = 'info') {
     setTimeout(() => message.remove(), 3000);
 }
 
-function toggleInventory() {
-    const items = document.getElementById('inventoryItems');
-    const icon = document.querySelector('.toggle-icon');
+function toggleBottomPanel() {
+    const panelContent = document.getElementById('bottomPanelContent');
+    const toggleBtn = document.querySelector('.panel-toggle span:first-child');
     
-    if (items && icon) {
-        if (items.style.display === 'flex') {
-            items.style.display = 'none';
-            icon.textContent = '▶';
-        } else {
-            items.style.display = 'flex';
-            icon.textContent = '▼';
+    if (panelContent) {
+        panelContent.classList.toggle('expanded');
+        const isExpanded = panelContent.classList.contains('expanded');
+        
+        const arrows = document.querySelectorAll('.panel-toggle span');
+        if (arrows.length >= 2) {
+            arrows[0].textContent = isExpanded ? '▼' : '▲';
+            arrows[1].textContent = isExpanded ? '▼' : '▲';
         }
     }
 }
 
-// Осн. логика игры 
+function toggleInventory() {
+    const items = document.getElementById('inventoryItems');
+    const icon = document.querySelector('.inventory-header .toggle-icon');
+    
+    if (items) {
+        items.classList.toggle('show');
+        if (icon) {
+            icon.textContent = items.classList.contains('show') ? '▼' : '▶';
+        }
+    }
+}
+
+// Осн. логика игры
 function loadScene(sceneId) {
     console.log('Loading scene:', sceneId);
     const gameScreen = document.getElementById('gameScreen');
@@ -340,28 +365,29 @@ function loadScene(sceneId) {
     }, 100);
 }
 
-// Сцены 
+// Сцены
 function getStartScene() {
     return `
         <div class="scene">
-            <div class="scene-title">ЛАС-ВЕГАС. 2:47 НОЧИ</div>
+            <div class="scene-title">Бар "У старого фонаря"</div>
             <div class="scene-description">
-                Бар "У старого фонаря"<br>
-                Запах бурбона, сигарет и старых историй.
+                Вы прилетели в Лас-Вегас по специальному поручению руководства AFP расследовать связь казино с организованной преступностью. Вам необходимо найти любую информацию, полезную для расследования.<br><br>
+                Первым делом вы решили навестить своего старого знакомого бармена – Ленни. Вдруг удастся у него что-нибудь узнать.
             </div>
             
             <div class="character">
                 <div class="character-avatar" style="background-image: url('images/character-lenny.png')"></div>
                 <div class="character-speech">
                     <span class="character-name">Ленни</span>
-                    <p>Ну что, герой? Говоришь, AFP прислало?</p>
-                    <p>Дон Карлеоне держит этот город. Хочешь материал - лезь в пасть льву.</p>
+                    <p>Давно не виделись, приятель!</p>
+                    <p>Я догадываюсь зачем ты здесь.</p>
+                    <p>Все, что ты ищешь находится в казино. Но знай, что однажды войдя туда, выйдешь ты оттуда совершенно другим человеком. Удачи!</p>
                 </div>
             </div>
             
             <div class="choices">
                 <button class="choice-btn" onclick="choiceMade('start_continue')">
-                    ▶ Выйти из бара
+                    ▶ Отправиться в казино
                 </button>
             </div>
         </div>
@@ -371,16 +397,15 @@ function getStartScene() {
 function getAct1Scene() {
     return `
         <div class="scene">
-            <div class="scene-title">АКТ I: ВРАТА В АД</div>
             <div class="scene-description">
-                Вы выходите из бара. Напротив — неоновая вывеска "GOLDEN ACE".<br>
-                Охрана на входе: двое амбалов в чёрных костюмах.<br>
+                Вы нашли то, что искали. Напротив — неоновая вывеска "GOLDEN ACE".<br>
+                Охрана на входе внимательно изучает вас.<br>
                 - Стоять. Приглашение есть?
             </div>
             
             <div class="choices">
                 <button class="choice-btn" onclick="choiceMade('guard_legend')">
-                    1 - Легенда: я новый крупье, Вито нанял
+                    1 - Легенда: я новый крупье
                 </button>
                 <button class="choice-btn" onclick="choiceMade('guard_bribe')">
                     2 - Дать взятку (200$)
@@ -397,15 +422,15 @@ function getVitoMeetingScene() {
     return `
         <div class="scene">
             <div class="scene-description">
-                Внутри казино. Гремит музыка, звенят автоматы.<br>
-                К вам решительно подходит мужчина в дорогом костюме.
+                Вы оказываетесь внутри казино.<br>
+                Вы новое лицо в этом месте и вас тут же замечает управляющий Вито.
             </div>
             
             <div class="character">
                 <div class="character-avatar" style="background-image: url('images/character-vito.png')"></div>
                 <div class="character-speech">
                     <span class="character-name">Вито</span>
-                    <p>Ты кто такой? Я Вито, управляющий. Я всех своих знаю.</p>
+                    <p>Ты кто такой? Вижу тебя впервые здесь.</p>
                 </div>
             </div>
             
@@ -414,7 +439,7 @@ function getVitoMeetingScene() {
                     1 - Честно: я журналист, хочу поговорить с Доном
                 </button>
                 <button class="choice-btn" onclick="choiceMade('vito_legend')">
-                    2 - Легенда: я новый крупье, охранники пропустили
+                    2 - Легенда: я новый крупье
                 </button>
                 <button class="choice-btn" onclick="choiceMade('vito_lenny')">
                     3 - Сказать, что от Ленни из бара
@@ -428,13 +453,13 @@ function getTestSkillScene() {
     return `
         <div class="scene">
             <div class="scene-description">
-                Вито ведёт вас в подсобку. Там стол для покера.<br>
-                - Покажи, что умеешь. Сдавай.
+                Вито что-то заподозрил – он ведет вас в подсобку, чтобы убедиться в вашем опыте крупье.<br>
+                - Показывай, что умеешь.
             </div>
             
             <div class="choices">
                 <button class="choice-btn" onclick="choiceMade('skill_bluff')">
-                    1 - Блефовать, что всё знаете
+                    1 - Блефовать, что всё знаешь
                 </button>
                 <button class="choice-btn" onclick="choiceMade('skill_honest')">
                     2 - Честно признаться в неопытности
@@ -449,14 +474,13 @@ function getTestSkillScene() {
 
 function getWeekLaterScene() {
     const jobText = gameState.job === 'dealer' 
-        ? 'Как крупье вы видите многое: кто проигрывает, кто выигрывает, кто странно себя ведёт.'
-        : 'Уборщиком вы невидимы. Вы видите то, что другим не видно: Вито встречается с людьми в подсобке, Дон приезжает только ночью, в мусоре обрывки бумаг с цифрами.';
+        ? 'Вам чудным образом удалось убедить Вито в том, что вы крупье – вас определили на работу.\n\nПрошла неделя, вы вжились в роль. Как крупье вы видите многое: кто проигрывает, кто выигрывает, кто странно себя ведёт.'
+        : 'Вы пытались продемонстрировать свои умения, но вы даже путаетесь в картах – Вито определяет вас в уборщики. Работая, вы видите то, что другим не видно: Вито встречается с людьми в подсобке, Дон приезжает только ночью, в мусоре обрывки бумаг с цифрами.';
     
     return `
         <div class="scene">
             <div class="scene-title">НЕДЕЛЯ СПУСТЯ</div>
             <div class="scene-description">
-                Прошла неделя. Вы вжились в роль.<br>
                 ${jobText}
             </div>
             
@@ -473,8 +497,7 @@ function getCheaterScene() {
     return `
         <div class="scene">
             <div class="scene-description">
-                Однажды вы замечаете: игрок за столом явно мухлюет.<br>
-                Он слишком часто выигрывает, и дилер делает странные движения.
+                В один из дней вы замечаете, как игрок за вашим столом явно мухлюет – он слишком часто выигрывает. Ваши действия?
             </div>
             
             <div class="choices">
@@ -496,7 +519,8 @@ function getDocumentsScene() {
     return `
         <div class="scene">
             <div class="scene-description">
-                Удача: после закрытия вы замечаете, что кабинет Вито не заперт.
+                Вы успешно выявляете жулика. Администрация вам благодарна и начинает к вам относиться более лояльно.<br><br>
+                В один из дней вы решаете задержаться на работе, ожидая, пока все остальные уйдут. Дождавшись момента, вы решили продолжить искать улики к своему расследованию от AFP. К счастью, кабинет Вито оказывается открытым:
             </div>
             
             <div class="choices">
@@ -515,24 +539,17 @@ function getDocumentsScene() {
 }
 
 function getDonMeetingScene() {
-
-    const evidenceText = gameState.stats.evidence >= 3 
-        ? 'И я знаю, что у тебя есть мои бумаги. Ты журналист AFP.' 
-        : 'Ты слишком много смотришь по сторонам для простого работника.';
-    
     return `
         <div class="scene">
             <div class="scene-description">
-                На следующий день вас приглашают в кабинет Дона.<br>
-                Дон Карлеоне — грузный мужчина с холодными глазами.
+                На следующий день вас приглашают в кабинет Дона.
             </div>
             
             <div class="character">
                 <div class="character-avatar" style="background-image: url('images/character-don.png')"></div>
                 <div class="character-speech">
                     <span class="character-name">Дон</span>
-                    <p>Садись. Ты неплохо работаешь. Но я знаю, кто ты.</p>
-                    <p>${evidenceText}</p>
+                    <p>Садись. Ты неплохо работаешь. Но я знаю, кто ты и зачем ты здесь.</p>
                     <p>У тебя два выхода. Работать на меня или умереть. Что выбираешь?</p>
                 </div>
             </div>
@@ -552,11 +569,11 @@ function getDonMeetingScene() {
     `;
 }
 
-// Главная функция обработки выборов 
+// Главная функция обработки выборов
 function choiceMade(choice) {
     console.log('Choice made:', choice);
     
-
+  
     gameState.choices.push(choice);
     
     switch(choice) {
@@ -603,9 +620,9 @@ function choiceMade(choice) {
             
         // Встреча с Вито
         case 'vito_truth':
-            gameState.ending = 'ПРОВАЛ: ВЫБРОШЕН ИЗ РАССЛЕДОВАНИЯ';
-            gameState.story.push('Попытка честности с Вито');
-            showMessage('💀 ПРОВАЛ...', 'danger');
+            gameState.ending = 'ЧЕСТНЫЙ, НО МЕРТВЫЙ';
+            gameState.story.push('Вы решили искать правду честным путем. Вы верили, что справедливость важнее хитрости. Вы не врали, не предавали, не играли по их правилам. Но в мире беззакония честность — не оружие.');
+            showMessage('💀 ПРОВАЛ МИССИИ...', 'danger');
             setTimeout(() => {
                 showEnding(gameState.ending);
             }, 1500);
@@ -628,20 +645,18 @@ function choiceMade(choice) {
             
         // Тест Навыков
         case 'skill_bluff':
-            gameState.story.push('Провал теста → работа уборщиком');
-            gameState.stats.respect--;
-            gameState.stats.risk += 2;
-            gameState.stats.lies++;
-            gameState.job = 'janitor';
-            showMessage('-1 уважение, +2 риск', 'error');
-            loadScene('week_later');
-            break;
-            
         case 'skill_honest':
-            gameState.story.push('Честность → работа уборщиком под надзором');
-            gameState.stats.respect++;
+            gameState.story.push('Провал теста → работа уборщиком');
+            if (choice === 'skill_bluff') {
+                gameState.stats.lies++;
+                showMessage('+1 ложь', 'info');
+            } else {
+                gameState.stats.respect++;
+                showMessage('+1 уважение', 'success');
+            }
+            gameState.stats.risk += 2;
             gameState.job = 'janitor';
-            showMessage('+1 уважение', 'success');
+            showMessage('+2 риск', 'warning');
             loadScene('week_later');
             break;
             
@@ -660,24 +675,23 @@ function choiceMade(choice) {
                 showMessage('📄 +1 улика (наблюдение за игроками)', 'evidence');
             } else {
                 gameState.stats.evidence += 2;
-                gameState.stats.respect--;
-                showMessage('📄 +2 улики (обрывки документов), -1 уважение', 'evidence');
+                showMessage('📄 +2 улики (обрывки документов)', 'evidence');
             }
             loadScene('cheater');
             break;
             
         // Мухлеж
         case 'cheater_call':
-            gameState.story.push('Позвал охрану → деньги и уважение');
+            gameState.story.push('Позвал охрану → администрация благодарна');
             gameState.stats.money += 500;
             gameState.stats.respect += 2;
-            gameState.bag.push('доверие Дона');
+            gameState.bag.push('доверие администрации');
             showMessage('+500$, +2 уважение', 'success');
             loadScene('documents');
             break;
             
         case 'cheater_silent':
-            gameState.story.push('Выследил → узнал схему');
+            gameState.story.push('Промолчал и проследил → узнал схему');
             gameState.stats.evidence += 2;
             gameState.stats.risk++;
             gameState.bag.push('информация о схеме мулежа');
@@ -695,43 +709,33 @@ function choiceMade(choice) {
             
         // Документы
         case 'docs_all':
-            if (gameState.stats.respect >= 3) {
-                gameState.story.push('Почти попался, но уважение спасло');
-                gameState.stats.evidence += 3;
-                gameState.stats.risk += 2;
-                gameState.bag.push('полная бухгалтерия казино');
-                showMessage('📄 +3 улики!', 'success');
-            } else {
-                gameState.ending = 'ПРОВАЛ: ПОЙМАН НА МЕСТЕ';
-                gameState.story.push('Пойман на фотографировании');
-                showMessage('💀 ВАС ПОЙМАЛИ...', 'danger');
-                setTimeout(() => {
-                    showEnding(gameState.ending);
-                }, 1500);
-                return;
-            }
-            loadScene('don_meeting');
-            break;
+            gameState.ending = 'ПРОВАЛ: ПОЙМАН НА МЕСТЕ';
+            gameState.story.push('Вас раскрыли. Мафия не прощает ошибок. Ваше тело найдено в пустыне Невада. AFP объявляет о пропаже сотрудника в Лас-Вегасе, но эта новость остается незамеченной. Расследование похоронено вместе с вами. Только ветер гуляет по пустыне...');
+            showMessage('💀 ВАС ПОЙМАЛИ...', 'danger');
+            setTimeout(() => {
+                showEnding(gameState.ending);
+            }, 1500);
+            return;
             
         case 'docs_select':
             gameState.story.push('Нашёл ключевые улики');
-            gameState.stats.evidence += 2;
+            gameState.stats.evidence += 3;
             gameState.bag.push('схемы отмывания денег');
-            showMessage('📄 +2 улики', 'evidence');
+            gameState.bag.push('бухгалтерия казино');
+            showMessage('📄 +3 улики!', 'success');
             loadScene('don_meeting');
             break;
             
         case 'docs_leave':
-            gameState.story.push('Упустил шанс');
-            gameState.stats.evidence = Math.max(0, gameState.stats.evidence - 1);
-            showMessage('📄 -1 улика', 'error');
+            gameState.story.push('Решил не рисковать');
+            showMessage('Вы ушли ни с чем', 'info');
             loadScene('don_meeting');
             break;
             
         // Встреча с Доном
         case 'don_agree':
             gameState.ending = 'СДЕЛКА: ЧЕЛОВЕК МАФИИ';
-            gameState.story.push('Согласился работать на Дона');
+            gameState.story.push('Вы соглашаетесь, – Дон довольно кивает. Через месяц вы пишете речи для Дона вместо статей для AFP. Вы выбрали путь, с которым изначально боролись.');
             showMessage('⚜️ СДЕЛКА С ДЬЯВОЛОМ...', 'warning');
             setTimeout(() => {
                 showEnding(gameState.ending);
@@ -758,26 +762,26 @@ function choiceMade(choice) {
         // Финальные выборы
         case 'final_publish':
             gameState.ending = 'ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ';
-            gameState.story.push('Опубликовал всё');
+            gameState.story.push('Вы публикуете сенсационное расследование: Дона арестовывают, казино опечатывают. Вы награждаетесь Пулитцеровской премией. Но мафия объявила награду 100 000$ за вашу голову. Вы живете под охраной, меняя квартиры каждую неделю.');
             showEnding('ПУЛИТЦЕР');
             return;
             
         case 'final_compromise':
             gameState.ending = 'СДЕЛКА: БОГАТСТВО И СОВЕСТЬ';
-            gameState.story.push('Пошёл на сделку');
+            gameState.story.push('Пошёл на сделку с Доном');
             gameState.stats.money += 200000;
             showEnding('СДЕЛКА');
             return;
             
         case 'final_destroy':
             gameState.ending = 'ПРОВАЛ: НИЧТО';
-            gameState.story.push('Уничтожил всё');
+            gameState.story.push('Уничтожил всё и уехал');
             showEnding('ПРОВАЛ');
             return;
             
         case 'trick_steal':
             gameState.ending = 'ПРОВАЛ: ПОЙМАН';
-            gameState.story.push('Попытка кражи');
+            gameState.story.push('Попытка кражи провалилась');
             showEnding('ПРОВАЛ');
             return;
             
@@ -804,7 +808,7 @@ function choiceMade(choice) {
     autoSave();
 }
 
-// Функции для финальных сцен 
+// Функции для финальных сцен
 function showFinalChoice() {
     const gameScreen = document.getElementById('gameScreen');
     
@@ -813,7 +817,7 @@ function showFinalChoice() {
             <div class="scene-title">ПОСЛЕДНИЙ ШАНС</div>
             <div class="scene-description">
                 В мотеле. Кровь на рубашке. Материалы с вами.<br>
-                Улик собрано: ${gameState.stats.evidence}/3
+                Улик собрано: ${gameState.stats.evidence}
             </div>
             
             <div class="choices">
@@ -863,38 +867,61 @@ function showEnding(type) {
     const gameScreen = document.getElementById('gameScreen');
     gameState.ending = type;
     
-  
+
     gameScreen.setAttribute('data-ending', type);
     gameScreen.removeAttribute('data-scene');
     
     let endingTitle = '';
     let endingDescription = '';
-    let evidenceTable = '';
     
     switch(type) {
+        case 'ЧЕСТНЫЙ, НО МЕРТВЫЙ':
+            endingTitle = '💀 ПРОВАЛ МИССИИ 💀';
+            endingDescription = `
+                Вы решили искать правду честным путем.<br>
+                Вы верили, что справедливость важнее хитрости.<br>
+                Вы не врали, не предавали, не играли по их правилам.<br>
+                Но в мире беззакония, честность — не оружие.<br><br>
+                Вас нашли на рассвете. Пустыня Невада молчаливо приняла ваше тело.<br>
+                Никто не слышал выстрелов. Никто ничего не видел.<br>
+                AFP ищет вас до сих пор. Запросы в полицию, звонки в морги,<br>
+                письма в больницы. Но пустыня умеет хранить тайны.<br>
+                Ваше имя осталось в списке пропавших без вести.<br>
+                Расследование умерло вместе с вами.
+            `;
+            break;
+            
+        case 'ПРОВАЛ: ПОЙМАН НА МЕСТЕ':
+            endingTitle = '💀 ПРОВАЛ МИССИИ 💀';
+            endingDescription = `
+                Вас раскрыли. Мафия не прощает ошибок.<br>
+                Ваше тело найдено в пустыне Невада.<br>
+                AFP объявляет о пропаже сотрудника в Лас-Вегасе, но эта новость остается незамеченной.<br>
+                Расследование похоронено вместе с вами.<br>
+                Только ветер гуляет по пустыне...
+            `;
+            break;
+            
         case 'СДЕЛКА: ЧЕЛОВЕК МАФИИ':
         case 'СДЕЛКА: БОГАТСТВО И СОВЕСТЬ':
         case 'СДЕЛКА':
             endingTitle = '⚜️ СДЕЛКА С ДЬЯВОЛОМ ⚜️';
             endingDescription = `
-                Вы соглашаетесь. Дон довольно кивает.<br>
+                Вы соглашаетесь, – Дон довольно кивает.<br>
                 Через месяц вы пишете речи для Дона вместо статей для AFP.<br>
-                Вам платят 50 000$ наличными. Вы покупаете дом в Мексике.<br>
-                AFP увольняет вас за пропажу материалов.<br>
-                Деньги есть. Совести — нет.
+                Вы выбрали путь, с которым изначально боролись.
             `;
             break;
             
         case 'ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ':
         case 'ПУЛИТЦЕР':
-            endingTitle = '🏆 ПУЛИТ. ПРЕМИЯ 🏆';
+            endingTitle = '🏆 ПУЛИТЦЕРОВСКАЯ ПРЕМИЯ 🏆';
             endingDescription = `
-                Вы публикуете сенсационное расследование в Le Monde.<br>
+                Вы публикуете сенсационное расследование:<br>
                 Дона арестовывают, казино опечатывают.<br>
-                AFP даёт вам Пулитцеровскую премию.<br>
+                Вы награждаетесь Пулитцеровской премией.<br>
                 Но мафия объявила награду 100 000$ за вашу голову.<br>
-                Вы живёте под охраной, меняя квартиры каждую неделю.<br>
-                Самолёт в аэропорту ждёт вашего отлёта в неизвестность...
+                Вы живете под охраной, меняя квартиры каждую неделю.
             `;
             break;
             
@@ -908,41 +935,16 @@ function showEnding(type) {
                 AFP так и не узнает, кто провёл расследование.<br>
                 Пустыня Невады остаётся позади...
             `;
-            
-
-            evidenceTable = `
-                <div class="evidence-table">
-                    <h3 style="color: #ffd700; margin-bottom: 15px;">📋 Вещественные доказательства</h3>
-                    <div style="display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;">
-                        ${gameState.bag.filter(item => 
-                            item.includes('улик') || 
-                            item.includes('схем') || 
-                            item.includes('бухгалтер') ||
-                            item.includes('информация') ||
-                            item.includes('бумаг') ||
-                            item.includes('документ')
-                        ).map(item => `
-                            <div class="inventory-item" style="background: rgba(255,215,0,0.3);">
-                                🔍 ${item}
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            `;
             break;
             
-        case 'ПРОВАЛ: ВЫБРОШЕН ИЗ РАССЛЕДОВАНИЯ':
-        case 'ПРОВАЛ: ПОЙМАН НА МЕСТЕ':
-        case 'ПРОВАЛ: ПОЙМАН':
         case 'ПРОВАЛ: НИЧТО':
         case 'ПРОВАЛ: ТРУС':
+        case 'ПРОВАЛ: ПОЙМАН':
         case 'ПРОВАЛ':
             endingTitle = '💀 ПРОВАЛ МИССИИ 💀';
             endingDescription = `
-                Вас раскрыли. Мафия не прощает ошибок.<br>
-                Ваше тело найдено в пустыне Невада.<br>
-                AFP отрицает, что вы были их сотрудником.<br>
-                Расследование похоронено вместе с вами.<br>
+                Вы проиграли. Мафия победила.<br>
+                Расследование похоронено.<br>
                 Только ветер гуляет по пустыне...
             `;
             break;
@@ -958,12 +960,10 @@ function showEnding(type) {
                 <div class="ending-title">${endingTitle}</div>
                 <div class="scene-description">${endingDescription}</div>
                 
-                ${evidenceTable}
-                
                 <div class="ending-stats">
-                    <div class="ending-stat">📄 Улики: ${gameState.stats.evidence}/3</div>
-                    <div class="ending-stat">👑 Уважение: ${gameState.stats.respect}/3</div>
-                    <div class="ending-stat">⚠️ Риск: ${gameState.stats.risk}/3</div>
+                    <div class="ending-stat">📄 Улики: ${gameState.stats.evidence}</div>
+                    <div class="ending-stat">👑 Уважение: ${gameState.stats.respect}</div>
+                    <div class="ending-stat">⚠️ Риск: ${gameState.stats.risk}</div>
                     <div class="ending-stat">💰 Деньги: ${gameState.stats.money}$</div>
                     <div class="ending-stat">🎭 Ложь: ${gameState.stats.lies}</div>
                 </div>
@@ -1005,7 +1005,7 @@ function saveToFile() {
     savedGames.push(gameResult);
     localStorage.setItem('vegas_history', JSON.stringify(savedGames));
     
-
+    
     let content = `ФИНАЛ: ${gameState.ending}\n`;
     content += '='.repeat(50) + '\n\n';
     content += 'ПОЛНАЯ ИСТОРИЯ:\n';
@@ -1013,9 +1013,9 @@ function saveToFile() {
         content += `${i+1}. ${event}\n`;
     });
     content += `\nСТАТИСТИКА:\n`;
-    content += `  Улики: ${gameState.stats.evidence}/3\n`;
-    content += `  Уважение: ${gameState.stats.respect}/3\n`;
-    content += `  Риск: ${gameState.stats.risk}/3\n`;
+    content += `  Улики: ${gameState.stats.evidence}\n`;
+    content += `  Уважение: ${gameState.stats.respect}\n`;
+    content += `  Риск: ${gameState.stats.risk}\n`;
     content += `  Деньги: ${gameState.stats.money}$\n`;
     content += `  Ложь: ${gameState.stats.lies}\n`;
     content += `\nИНВЕНТАРЬ:\n`;
@@ -1030,79 +1030,5 @@ function autoSave() {
     if (currentUser) {
         users[currentUser].gameState = JSON.parse(JSON.stringify(gameState));
         localStorage.setItem('vegas_users', JSON.stringify(users));
-    }
-}
-
-
-let isPanelExpanded = false;
-
-
-function toggleBottomPanel() {
-    const panelContent = document.getElementById('bottomPanelContent');
-    const toggleBtn = document.querySelector('.panel-toggle span:first-child');
-    
-    if (panelContent) {
-        panelContent.classList.toggle('expanded');
-        isPanelExpanded = panelContent.classList.contains('expanded');
-        
-       
-        const arrows = document.querySelectorAll('.panel-toggle span');
-        if (arrows.length >= 2) {
-            arrows[0].textContent = isPanelExpanded ? '▼' : '▲';
-            arrows[1].textContent = isPanelExpanded ? '▼' : '▲';
-        }
-    }
-}
-
-
-function toggleInventory() {
-    const items = document.getElementById('inventoryItems');
-    const icon = document.querySelector('.inventory-header .toggle-icon');
-    
-    if (items) {
-        items.classList.toggle('show');
-        if (icon) {
-            icon.textContent = items.classList.contains('show') ? '▼' : '▶';
-        }
-    }
-}
-
-
-document.addEventListener('DOMContentLoaded', () => {
-    console.log('Game initialized');
-    updateUI();
-    loadScene('start');
-    updateInventory();
-    checkSavedGame();
-    
-
-    const panelContent = document.getElementById('bottomPanelContent');
-    if (panelContent) {
-        panelContent.classList.remove('expanded');
-    }
- 
-
-    const inventoryItems = document.getElementById('inventoryItems');
-    if (inventoryItems) {
-        inventoryItems.classList.remove('show');
-    }
-});
-
-
-function updateInventory() {
-    const inventoryDiv = document.getElementById('inventoryItems');
-    if (!inventoryDiv) return;
-    
-    inventoryDiv.innerHTML = '';
-    
-    if (gameState.bag.length === 0) {
-        inventoryDiv.innerHTML = '<div class="inventory-item">🎒 Пусто</div>';
-    } else {
-        gameState.bag.forEach(item => {
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'inventory-item';
-            itemDiv.textContent = item;
-            inventoryDiv.appendChild(itemDiv);
-        });
     }
 }
